@@ -1,7 +1,7 @@
 from typing import Any
 import mesa
 import random
-from agents import Ant, Colony, Food
+from agents import Ant, Colony, Food, Pheromone
 from mesa.visualization.modules import CanvasGrid
 
 GRID_SIZE = 15
@@ -78,6 +78,14 @@ def agent_portrayal(agent: mesa.Agent) -> dict:
     portrayal["Layer"] = 0
     portrayal["Color"] = "green"
     portrayal["r"] = 0.35
+  elif type(agent) is Pheromone:
+    c = agent.steps_valid
+    portrayal["Shape"] = "rect"
+    portrayal["Filled"] = "true"
+    portrayal["Layer"] = 0
+    portrayal["Color"] = f"#50{c}050"
+    portrayal["w"] = 1
+    portrayal["h"] = 1
 
   return portrayal
 

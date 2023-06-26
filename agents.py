@@ -69,6 +69,10 @@ class Ant(mesa.Agent):
       food_to_grab[0].grabbed = True
       self.state = AntState.RETURNING
 
+      pheromone = Pheromone(self.model._last_agent_id() + 1, self.model, 9)
+      self.model.grid.place_agent(pheromone, self.pos)
+      self.model.schedule.add(pheromone)
+
 class Food(mesa.Agent):
   def __init__(self, unique_id: int, model: mesa.Model, steps_valid: int) -> None:
     super().__init__(unique_id, model)
@@ -82,6 +86,19 @@ class Food(mesa.Agent):
       self.model.schedule.remove(self)
 
 
+    if self.steps_valid <= 0:
+      self.model.grid.remove_agent(self)
+      self.model.schedule.remove(self)
+    else:
+      self.steps_valid -= 1
+
+class Pheromone(mesa.Agent):
+  def __init__(self, unique_id: int, model: Model, steps_valid: int) -> None:
+    super().__init__(unique_id, model)
+
+    self.steps_valid = steps_valid
+
+  def step(self) -> None:
     if self.steps_valid <= 0:
       self.model.grid.remove_agent(self)
       self.model.schedule.remove(self)
